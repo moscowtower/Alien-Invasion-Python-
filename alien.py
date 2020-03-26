@@ -2,10 +2,10 @@ import pygame
 from pygame.sprite import Sprite
 
 class Alien(Sprite):
-    def __init__(self, ai_game):
-        super().__init__()
-        self.screen = ai_game.screen
-        self.settings = ai_game.settings
+    def __init__(self, ai_settings, screen):
+        super(Alien, self).__init__()
+        self.screen = screen
+        self.ai_settings = ai_settings
 
         self.image = pygame.image.load('images/alien.png')
         self.rect = self.image.get_rect()
@@ -16,11 +16,14 @@ class Alien(Sprite):
         self.x = float(self.rect.x)
     
     def update(self):
-        self.x += (self.settings.alien_speed *
-                    self.settings.fleet_direction)
+        self.x += (self.ai_settings.alien_speed *
+                    self.ai_settings.fleet_direction)
         self.rect.x = self.x
 
     def check_edges(self):
         screen_rect = self.screen.get_rect()
         if self.rect.right >= screen_rect.right or self.rect.left <= screen_rect.left:
             return True
+
+    def blitme(self):
+        self.screen.blit(self.image, self.rect)

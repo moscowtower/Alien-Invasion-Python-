@@ -4,12 +4,11 @@ from pygame.sprite import Group
 from ship import Ship
 
 class Scoreboard():
-    def __init__(self, ai_game):
-        self.ai_game = ai_game
-        self.screen = ai_game.screen
-        self.screen_rect = self.screen.get_rect()
-        self.settings = ai_game.settings
-        self.stats = ai_game.stats
+    def __init__(self, ai_settings, screen, stats):
+        self.screen = screen
+        self.screen_rect = screen.get_rect()
+        self.ai_settings = ai_settings
+        self.stats = stats
 
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
@@ -26,7 +25,7 @@ class Scoreboard():
                             score_str,
                             True,
                             self.text_color,
-                            self.settings.bg_color)
+                            self.ai_settings.bg_color)
 
         self.score_rect = self.score_image.get_rect()
         self.score_rect.right = self.screen_rect.right - 20
@@ -45,17 +44,12 @@ class Scoreboard():
                                     high_score_str,
                                     True,
                                     self.text_color,
-                                    self.settings.bg_color
+                                    self.ai_settings.bg_color
                                     )
 
         self.high_score_rect = self.high_score_image.get_rect()
         self.high_score_rect.centerx = self.screen_rect.centerx
         self.high_score_rect.top = self.score_rect.top
-
-    def check_high_score(self):
-        if self.stats.score > self.stats.high_score:
-            self.stats.high_score = self.stats.score
-            self.prep_high_score()
 
     def prep_level(self):
         level = self.stats.level
@@ -64,7 +58,7 @@ class Scoreboard():
                             level_str,
                             True,
                             self.text_color,
-                            self.settings.bg_color)
+                            self.ai_settings.bg_color)
 
         self.level_rect = self.level_image.get_rect()
         self.level_rect.right = self.score_rect.right
@@ -73,7 +67,7 @@ class Scoreboard():
     def prep_ships(self):
         self.ships = Group()
         for ship_number in range(self.stats.ships_left):
-            ship = Ship(self.ai_game)
+            ship = Ship(self.ai_settings, self.screen)
             ship.rect.x = 10 + ship_number + ship.rect.width
             ship.rect.y = 10
             self.ships.add(ship)
